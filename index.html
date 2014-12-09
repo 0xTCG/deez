@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>DeeZ by inumanag</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>DeeZ</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          <a href="https://github.com/inumanag/deez/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/inumanag/deez/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/inumanag/deez" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="deez-reference-based-compression-by-local-assembly" class="anchor" href="#deez-reference-based-compression-by-local-assembly" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<strong>DeeZ</strong>: Reference Based Compression by Local Assembly</h1>
+
+<hr>
+
+<h3>
+<a id="so-what-is-deez" class="anchor" href="#so-what-is-deez" aria-hidden="true"><span class="octicon octicon-link"></span></a>So what is DeeZ?</h3>
+
+<p>DeeZ is a tool for compressing SAM/BAM files.</p>
+
+<h3>
+<a id="how-do-i-get-deez" class="anchor" href="#how-do-i-get-deez" aria-hidden="true"><span class="octicon octicon-link"></span></a>How do I get DeeZ?</h3>
+
+<p>Just clone our repository and issue <code>make</code> command:</p>
+
+<pre><code>git clone https://bitbucket.org/compbio/dz.git
+cd dz &amp;&amp; make
+</code></pre>
+
+<blockquote>
+<p><strong>Note</strong>: You will need at least g++ 4.4 to compile the sources.</p>
+</blockquote>
+
+<h3>
+<a id="how-do-i-run-deez" class="anchor" href="#how-do-i-run-deez" aria-hidden="true"><span class="octicon octicon-link"></span></a>How do I run DeeZ?</h3>
+
+<p>DeeZ is invoked as following:</p>
+
+<ul>
+<li>
+<p><strong>Compression</strong></p>
+
+<p><code>deez -r [reference] [input.sam] -o [output]</code></p>
+
+<p>This will compress <code>input.sam</code> to <code>input.sam.dz</code>.</p>
+</li>
+<li>
+<p><strong>Decompression</strong></p>
+
+<p><code>deez -r [reference] [input.dz] -o [output] ([region])</code></p>
+
+<p>This will decompress <code>input.dz</code> to <code>input.dz.sam</code>. <code>[region]</code> is optional.</p>
+</li>
+<li>
+<p><strong>Random Access</strong></p>
+
+<p>You can also specify the region of interest while decompressing (i.e. randomly access the region). For example, to extract some reads from chr16 to standard output, you should run:
+<code>deez -r [reference] input.dz  -c chr16:15000000-16000000</code></p>
+</li>
+</ul>
+
+<hr>
+
+<h3>
+<a id="parameter-explanation" class="anchor" href="#parameter-explanation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameter explanation</h3>
+
+<ul>
+<li>
+<p><code>--threads, -t [number]</code></p>
+
+<p>Set up the number of threads DeeZ may use for compression and decompression.</p>
+
+<p>Default value: <strong>4</strong></p>
+</li>
+<li>
+<p><code>--reference, -r [file|directory]</code></p>
+
+<p>Specify the FASTA reference file.</p>
+
+<blockquote>
+<p><strong>Note</strong>: Chromosome names in the SAM and FASTA files must match. Also, instead of one big FASTA file, DeeZ supports reference lookup in the given directory for chr*.fa files, where chr* is the chromosome ID from the SAM file.</p>
+</blockquote>
+</li>
+<li>
+<p><code>--force, -!</code></p>
+
+<p>Force overwrite of exiting files.</p>
+</li>
+<li>
+<p><code>--stdout, -c</code></p>
+
+<p>Compress/decompress to the stdout.</p>
+</li>
+<li>
+<p><code>--output, -o [file]</code></p>
+
+<p>Compress/decompress to the <code>file</code>.</p>
+</li>
+<li>
+<p><code>--lossy, -l</code></p>
+
+<p>Set lossy parameter for quality lossy encoding (for more information, please check <a href="http://scalce.sourceforge.net/">SCALCE</a>).</p>
+</li>
+<li>
+<p><code>--quality, -q [mode]</code></p>
+
+<p>If <code>mode</code> is <strong>1</strong> or <strong>samcomp</strong>, DeeZ will use <a href="https://sourceforge.net/projects/samcomp/">sam_comp</a> quality model to encode the qualities. Quality random access is not supported on those files. </p>
+</li>
+<li>
+<p><code>--withflag, -f [flag]</code></p>
+
+<p>Decompress only mappings which have <code>flag</code> bits set.</p>
+</li>
+<li>
+<p><code>--withoutflag, -F [flag]</code></p>
+
+<p>Decompress only mappings which do not have <code>flag</code> bits set.</p>
+</li>
+<li>
+<p><code>--stats, -S</code></p>
+
+<p>Display mapping statistics (needs DeeZ file as input).</p>
+</li>
+<li>
+<p><code>--sort, -s</code></p>
+
+<p>Sort the input SAM/BAM file by mapping location.</p>
+</li>
+<li>
+<p><code>--sortmem, -M [size]</code></p>
+
+<p>Maximum memory used for sorting. </p>
+
+<p>Default value: <strong>1G</strong></p>
+</li>
+</ul>
+
+<hr>
+
+<h3>
+<a id="contact--support" class="anchor" href="#contact--support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contact &amp; Support</h3>
+
+<p>Feel free to drop any inquiry to <a href="mailto:">inumanag at sfu dot ca</a>.</p>
+
+<h3>
+<a id="publication" class="anchor" href="#publication" aria-hidden="true"><span class="octicon octicon-link"></span></a>Publication</h3>
+
+<p>DeeZ was publised in <a href="http://www.nature.com/nmeth/journal/v11/n11/full/nmeth.3133.html">Nature Methods in November 2014</a>.</p>
+
+<h3>
+<a id="authors" class="anchor" href="#authors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors</h3>
+
+<ul>
+<li>Dr. Faraz Hach</li>
+<li>Ibrahim Numanagić</li>
+<li>Dr. S. Cenk Şahinalp</li>
+</ul>
+
+<h3>
+<a id="licence" class="anchor" href="#licence" aria-hidden="true"><span class="octicon octicon-link"></span></a>Licence</h3>
+
+<p>Copyright (c) 2013, 2014, Simon Fraser University, Indiana University Bloomington. All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
+
+<ul>
+<li>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</li>
+<li>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</li>
+<li>Neither the name of the Simon Fraser University, Indiana University Bloomington nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
